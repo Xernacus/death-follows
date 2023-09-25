@@ -23,6 +23,6 @@ public class PlayerHurtResponder : MonoBehaviour, IHurtResponder
     void IHurtResponder.Response(HitData data) 
     {
         Debug.Log("Damaged");
-        gameObject.GetComponent<Health>().Damage(data.damage);
+        //gameObject.GetComponent<Health>().Damage(data.damage);
     }
 }
