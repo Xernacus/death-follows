@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
 
     private CharacterController _characterController;
 
-    private Vector2 _movementDirection;
+    public Vector2 movementDirection { get; private set; }
     private Vector2 _lookDirection;
     private Vector3 _playerVelocity;
 
@@ -62,7 +62,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
         
-        _movementDirection = _playerControls.Controls.Movement.ReadValue<Vector2>();
+        movementDirection = _playerControls.Controls.Movement.ReadValue<Vector2>();
         _lookDirection = _playerControls.Controls.Aim.ReadValue<Vector2>();
         if (_dashAction.triggered)
         {
@@ -75,14 +75,16 @@ public class PlayerController : MonoBehaviour
     {
         if (_dashing)
         {
-            _characterController.Move(_lookDirection * Time.deltaTime * moveSpeed);
+            //_characterController.Move(_lookDirection * Time.deltaTime * moveSpeed);
         }
         else
         {
-            Vector3 _move = new Vector3(_movementDirection.x, 0, _movementDirection.y);
+            Vector3 _move = new Vector3(movementDirection.x, 0, movementDirection.y);
             _characterController.Move(_move * Time.deltaTime * moveSpeed);
+            //transform.position = Vector3.MoveTowards(transform.position, _move, Time.deltaTime * moveSpeed);
+
         }
-        
+
     }
 
     private void HandleRotation()

@@ -9,13 +9,15 @@ public class AIAgent : MonoBehaviour
     public AIAgentConfig config;
 
     public GameObject _hitbox;
-    [HideInInspector] public List<GameObject> krill;
 
    
     // Start is called before the first frame update
     void Start()
     {
         stateMachine = new AIStateMachine(this);
+        stateMachine.RegisterState(new AIEnemyWanderState());
+        stateMachine.RegisterState(new AIMeleeAttackState());
+        stateMachine.RegisterState(new AIRangedAttackState());
         stateMachine.ChangeState(initialState);
     }
 
@@ -25,10 +27,10 @@ public class AIAgent : MonoBehaviour
         stateMachine.Update();
     }
 
-    /**
+ 
     public void ChangeState()
     {
         stateMachine.ChangeState(config.newState);
     }
-    **/
+    
 }

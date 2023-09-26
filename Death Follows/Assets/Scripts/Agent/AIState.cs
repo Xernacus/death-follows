@@ -4,7 +4,9 @@ using UnityEngine;
 
 
 public enum AIStateID { 
-
+    EnemyWander,
+    MeleeAttack,
+    RangedAttack
 }
 
 public interface AIState
