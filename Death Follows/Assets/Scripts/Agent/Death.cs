@@ -17,18 +17,27 @@ public class Death : MonoBehaviour
     protected int _attack;
     private Vector3 _offset;
     private Animator _animator;
-    private BasicHitResponder _hitResponder;
-
+    public ParticleSystem particles;
     public GameObject art;
-    public HitBox _hitbox;
+    public HitTracker hitTracker;
+
+    #region Hitboxes
+    public BasicHitResponder leftSlashHitbox;
+    public BasicHitResponder rightSlashHitbox;
+    public BasicHitResponder undodgeableHitbox;
+    #endregion
+
     public float slashDistance = 1f;
     public float dashDistance = 3f;
     void Start()
     {
         Debug.Log("Attack");
         _target = GameObject.FindGameObjectWithTag("Player");
-        //agent.config.destination = _target.transform;
         _animator = GetComponentInChildren<Animator>();
+        GetOffset();
+        art.SetActive(false);
+        var emission = particles.emission;
+        emission.enabled = false;
         //_hitResponder = _hitbox.GetComponent<BasicHitResponder>();
     }
 
@@ -41,17 +50,17 @@ public class Death : MonoBehaviour
             {
                 if (!_attacking)
                 {
-                    if (_attack == 2)
+                    if (_attack == 0)
                     {                      
                         StartCoroutine(Slash());
                     }
                     else if (_attack == 1)
                     {
-                        StartCoroutine(Dash());
+                        StartCoroutine(Undodgeable());
                     }
-                    else if (_attack == 0)
+                    else if (_attack == 2)
                     {
-                        StartCoroutine(Slash());
+                        StartCoroutine(Dash());
                     }
                 }                
             }
@@ -72,7 +81,6 @@ public class Death : MonoBehaviour
 
     private void GetOffset()
     {
-        Debug.Log("did a thing");
         _offset = Vector3.ClampMagnitude(new Vector3(Random.Range(-1, 2) * _offsetDistance, 0, Random.Range(-1, 2) * _offsetDistance), _offsetDistance);
         if (_offset.magnitude == 0)
         {
@@ -85,9 +93,16 @@ public class Death : MonoBehaviour
         _charging = true;
         switch (_attack)
         {
+            case 0:
+                _cooldown = 0f;
+                break;
             case 1:
+                _cooldown = 1f;
+                break;
             case 2:
-            case 3:
+                _cooldown = 5f;
+                break;
+
             default:
                 break;
         }
@@ -105,9 +120,14 @@ public class Death : MonoBehaviour
             if (_teleportTimer > 2f)
             {
                 _teleportTimer = -1f;
-                _attack = Random.Range(0, 3);
+
+                //MADE ATTACK ONLY CHOOSE SLASH
+                _attack = Random.Range(0, 2);
+
                 Debug.Log(_attack);
                 art.SetActive(true);
+                var emission = particles.emission;
+                emission.enabled = true;
                 StartCoroutine(Windup());
             }
             else
@@ -122,49 +142,60 @@ public class Death : MonoBehaviour
         _teleportTimer = 0f;
         GetOffset();
         art.SetActive(false);
+        var emission = particles.emission;
+        emission.enabled = false;
         return;
     }
 
     IEnumerator Slash()
     {
-        _attacking = true;
-        while (_updateTimer < 0.5)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed);
-            _updateTimer += Time.deltaTime;
-            yield return null;
-        }
-        _attacking = false;
-        _updateTimer = 0f;
-        Teleport();
-        
-        /**
         int id = Animator.StringToHash("Slash");
+        _attacking = true;
+        _animator.Play("Slash", 0, 0.0f);
+        hitTracker._objectsHit = new List<GameObject>();
         if (_animator.HasState(0, id))
         {
-            var state = _animator.GetCurrentAnimatorStateInfo(0);
-            while (state.fullPathHash == id || state.shortNameHash == id)
+            while (true)
             {
-                _attacking = true;
-                int totalFrames = GetTotalFrames(_animator, 0);
-
-                int currentFrame = GetCurrentFrame(totalFrames, GetNormalizedTime(state));
-                if (currentFrame > 64 && currentFrame < 90)
+                          
+                var state = _animator.GetCurrentAnimatorStateInfo(0);
+                if (state.fullPathHash == id || state.shortNameHash == id)
                 {
-                    _hitResponder._hitBox.CheckHit();
-                }
-                return;
-            }
-            if (_attacking == true)
-            {
-                Teleport();
-                _attacking = false;
-            }
-            _animator.Play("Slash", 0, 0.0f);
-            _hitResponder._objectsHit = new List<GameObject>();
-        }
-        **/
+                    int totalFrames = GetTotalFrames(_animator, 0);
 
+                    int currentFrame = GetCurrentFrame(totalFrames, GetNormalizedTime(state));
+
+                    if (currentFrame < 90)
+                    {
+                        transform.position = _target.transform.position + _offset;
+                        transform.LookAt(_target.transform.position);
+                    }
+                    else if (currentFrame > 89 && currentFrame < 94)
+                    {
+                        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed);
+                    }
+                    else if (currentFrame > 93 && currentFrame < 101)
+                    {
+                        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed);
+                        rightSlashHitbox._hitBox.CheckHit();
+                    }
+                    else if (currentFrame > 100 && currentFrame < 105)
+                    {
+                        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed);
+                        leftSlashHitbox._hitBox.CheckHit();
+                    }
+                    else if(currentFrame > 176)
+                    {
+                        break;
+                    }
+                    
+                }                
+                yield return null;
+            }
+            
+        }
+        _attacking = false;
+        Teleport();
     }
 
     IEnumerator Dash()
@@ -180,7 +211,53 @@ public class Death : MonoBehaviour
         _attacking = false;
         Teleport();
     }
-        private int GetTotalFrames(Animator animator, int layerIndex)
+
+    IEnumerator Undodgeable()
+    {
+        Debug.Log("Undodge Attack");
+        int id = Animator.StringToHash("Slash");
+        _attacking = true;
+        _animator.Play("Slash", 0, 0.0f);
+        hitTracker._objectsHit = new List<GameObject>();
+        if (_animator.HasState(0, id))
+        {
+            while (true)
+            {
+
+                var state = _animator.GetCurrentAnimatorStateInfo(0);
+                if (state.fullPathHash == id || state.shortNameHash == id)
+                {
+                    int totalFrames = GetTotalFrames(_animator, 0);
+
+                    int currentFrame = GetCurrentFrame(totalFrames, GetNormalizedTime(state));
+
+                    if (currentFrame < 90)
+                    {
+                        transform.position = _target.transform.position + _offset;
+                        transform.LookAt(_target.transform.position);
+                    }                    
+                    else if (currentFrame > 93 && currentFrame < 101)
+                    {
+                        undodgeableHitbox._hitBox.CheckHit();
+                    }
+                    else if (currentFrame > 100 && currentFrame < 105)
+                    {
+                        undodgeableHitbox._hitBox.CheckHit();
+                    }
+                    else if (currentFrame > 176)
+                    {
+                        break;
+                    }
+
+                }
+                yield return null;
+            }
+
+        }
+        _attacking = false;
+        Teleport();
+    }
+    private int GetTotalFrames(Animator animator, int layerIndex)
     {
         AnimatorClipInfo[] _clipInfos = animator.GetNextAnimatorClipInfo(layerIndex);
         if (_clipInfos.Length == 0)

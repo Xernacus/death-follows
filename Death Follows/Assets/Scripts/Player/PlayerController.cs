@@ -1,122 +1,150 @@
+using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Animations;
 using UnityEngine.InputSystem;
-[RequireComponent(typeof(CharacterController)), RequireComponent(typeof(PlayerInput))]
+using static UnityEngine.UI.Image;
+
+[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;
-
-    private CharacterController _characterController;
-
+    public int health = 3;
+    public GameObject soul;
+    public GameObject ricochetHitParticle;
+    public GameObject art;
+    public GameObject death;
     public Vector2 movementDirection { get; private set; }
     private Vector2 _lookDirection;
-    private Vector3 _playerVelocity;
 
-    private PlayerControls _playerControls;
-    private PlayerInput _playerInput;
-
-    private InputAction _dashAction;
     private bool _dashing = false;
-    public float _dashLength;
-    public float _dashSpeed;
-    void Awake()
-    {
-        _characterController = GetComponent<CharacterController>();
-        _playerControls = new PlayerControls();
-        _playerInput = GetComponent<PlayerInput>();
+    public float _dashLength = 0.3f;
+    private float _dashSpeed = 2.25f;
 
-    }
+    private bool _ricocheting = false;
+    public float ricochetSpeed = 8f;
 
-    private void OnEnable()
-    {
-        _dashAction = _playerInput.actions["Dash"];
-        _playerControls.Enable();
-        Debug.Log(_dashAction);
-    }
+    public Action<Vector2> OnMove;
+    public void SubscribeToOnMove(Action<Vector2> callback) => OnMove += callback;
+    public void UnsubscribeToOnMove(Action<Vector2> callback) => OnMove -= callback;
+       
+    PlayerInput _input;
+    InputAction _moveAction;
+    InputAction _lookAction;
+    InputAction _dashAction;
 
-    private void OnDisable()
-    {
-        _playerControls.Disable();
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        _characterController = GetComponent<CharacterController>();
-    }
 
-    
-    // Update is called once per frame
-    void Update()
-    {
-        HandleInput();
-        HandleMovement();
-        HandleRotation();
-    }
-
-    private void HandleInput()
-    {
-        if (_dashing)
+        void OnEnable()
         {
+            _input = GetComponent<PlayerInput>();
+            _moveAction = _input.actions["Move"];
+            _lookAction = _input.actions["Look"];
+            _dashAction = _input.actions["Dash"];
+
+            SubInput();
+        }
+
+        void OnDisable() => UnsubInput();
+
+        void Update()
+        {
+        if (_ricocheting)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * ricochetSpeed);
             return;
         }
-        
-        movementDirection = _playerControls.Controls.Movement.ReadValue<Vector2>();
-        _lookDirection = _playerControls.Controls.Aim.ReadValue<Vector2>();
-        if (_dashAction.triggered)
+            HandleInput();
+            HandleMovement();
+            if (_dashing)
+            {
+                return;
+            }
+            HandleRotation();
+        }
+             
+        void SubInput() => _dashAction.performed += OnDash;
+        void UnsubInput() => _dashAction.performed -= OnDash;
+
+        private void HandleInput()
+        {
+            if (_dashing)
+            {
+                return;
+            }
+
+            movementDirection = _moveAction.ReadValue<Vector2>();
+            _lookDirection = _lookAction.ReadValue<Vector2>();
+        }
+
+        private void HandleMovement()
+        {
+            if (_dashing)
+            {
+                Vector3 _move = transform.forward + new Vector3(movementDirection.x, 0, movementDirection.y) * 0.5f;
+                _dashSpeed = _dashSpeed - Time.deltaTime * 5;
+                transform.position = Vector3.MoveTowards(transform.position, transform.position + _move, Time.deltaTime * moveSpeed * _dashSpeed);
+            }
+            else
+            {
+                Vector3 _move = new Vector3(movementDirection.x, 0, movementDirection.y);
+                transform.position = Vector3.MoveTowards(transform.position, transform.position + _move, Time.deltaTime * moveSpeed);
+            }
+
+        }
+        private void HandleRotation()
+        {
+            Ray ray = Camera.main.ScreenPointToRay(_lookDirection);
+            Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+            float rayDistance;
+
+            if (groundPlane.Raycast(ray, out rayDistance))
+            {
+                Vector3 point = ray.GetPoint(rayDistance);
+                LookAt(point);
+            }
+        }
+        private void LookAt(Vector3 point)
+        {
+            Vector3 lookPoint = new Vector3(point.x, transform.position.y, point.z);
+            transform.LookAt(lookPoint);
+        }   
+        void OnDash(InputAction.CallbackContext context)
         {
             Debug.Log("Dashed");
             StartCoroutine(Dash());
         }
-    }
-
-    private void HandleMovement()
-    {
-        if (_dashing)
+               
+        IEnumerator Dash()
         {
-            //_characterController.Move(_lookDirection * Time.deltaTime * moveSpeed);
+            _dashSpeed = 2f;
+            _dashing = true;
+            yield return new WaitForSeconds(_dashLength);
+            _dashing = false;
         }
-        else
+        
+    public void Damage(int damage)
+    {
+        if (!_dashing && !_ricocheting)
         {
-            Vector3 _move = new Vector3(movementDirection.x, 0, movementDirection.y);
-            _characterController.Move(_move * Time.deltaTime * moveSpeed);
-            //transform.position = Vector3.MoveTowards(transform.position, _move, Time.deltaTime * moveSpeed);
-
-        }
-
+            health -= damage;
+        }        
     }
 
-    private void HandleRotation()
+    public void SoulRicochet()
     {
-        Ray ray = Camera.main.ScreenPointToRay(_lookDirection);
-        Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
-        float rayDistance;
-
-        if (groundPlane.Raycast(ray, out rayDistance))
-        {
-            Vector3 point = ray.GetPoint(rayDistance);
-            LookAt(point);
-        }
+        Debug.Log("Ricochet Player");
+        _ricocheting = true;
+        transform.forward = (gameObject.transform.position - death.transform.position).normalized;
+        art.SetActive(false);
+        Instantiate(soul, gameObject.transform);
     }
 
-    public void OnDash(InputAction.CallbackContext context)
+    public void RicochetHit(GameObject enemyHit)
     {
-        Debug.Log("Dashed");
-        StartCoroutine(Dash());
-    }
-
-    private void LookAt(Vector3 point)
-    {
-        Vector3 lookPoint = new Vector3(point.x, transform.position.y, point.z);
-        transform.LookAt(lookPoint);
-    }
-    IEnumerator Dash()
-    {
-        moveSpeed *= _dashSpeed;
-        _dashing = true;
-        yield return new WaitForSeconds(_dashLength);
-        _dashing = false;
-        moveSpeed /= _dashSpeed;
+        _ricocheting = false;
+        art.SetActive(true);
+        Instantiate(ricochetHitParticle, enemyHit.transform.position, Quaternion.identity);
+        Destroy(enemyHit);
+        
     }
 }
+  

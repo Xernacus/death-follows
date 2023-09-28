@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerHurtResponder : MonoBehaviour, IHurtResponder
+public class EnemyHurtResponder : MonoBehaviour, IHurtResponder
 {
     private List<HurtBox> m_hurtboxes = new List<HurtBox>();
 
@@ -23,12 +23,6 @@ public class PlayerHurtResponder : MonoBehaviour, IHurtResponder
     void IHurtResponder.Response(HitData data) 
     {
         Debug.Log("Damaged");
-        if (data.damage == -1)
-        {
-            Debug.Log("Ricochet");
-            gameObject.GetComponent<PlayerController>().SoulRicochet();
-            return;
-        }
-        gameObject.GetComponent<PlayerController>().Damage(data.damage);
+        gameObject.GetComponent<Ragdoll>().Damage(data.damage);
     }
 }

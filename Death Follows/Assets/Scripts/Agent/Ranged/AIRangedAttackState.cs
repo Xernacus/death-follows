@@ -67,7 +67,6 @@ public class AIRangedAttackState : AIState
                 GameObject[] player = _sensor.Filter(new GameObject[1], "Player");
                 if (player[0] != null)
                 {
-                    Debug.Log("Attack");
                     AttemptAttack();
                 }
 
