@@ -13,7 +13,7 @@ public class AIRangedAttackState : AIState
     private AISensor _sensor;
     private float _updateTimer;
     private float _scanTimer;
-    private float _turnSpeed = 1f;
+    private float _turnSpeed = 4f;
     
 
     public void Enter(AIAgent agent)
@@ -24,6 +24,7 @@ public class AIRangedAttackState : AIState
         _playerController = _target.GetComponent<PlayerController>();
         _sensor.distance = _sensor.distance * 2;
         _sensor.angle = 20f;
+        //_agent.updateRotation = false;
     }
 
     public void Exit(AIAgent agent)
@@ -54,7 +55,7 @@ public class AIRangedAttackState : AIState
 
         if (_agent.isStopped)
         {
-            agent.gameObject.transform.forward = Vector3.Slerp(agent.gameObject.transform.forward, (_target.transform.position - agent.gameObject.transform.forward).normalized, Time.deltaTime * _turnSpeed);
+            agent.gameObject.transform.forward = Vector3.Slerp(agent.gameObject.transform.forward, (_target.transform.position - agent.gameObject.transform.position).normalized, Time.deltaTime * _turnSpeed);
 
             _scanTimer -= Time.deltaTime;
 

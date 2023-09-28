@@ -16,7 +16,6 @@ public class Death : MonoBehaviour
     private float _moveSpeed = 10f;
     protected int _attack;
     private Vector3 _offset;
-    private Vector3 _marker;
     private Animator _animator;
     private BasicHitResponder _hitResponder;
 
@@ -43,18 +42,15 @@ public class Death : MonoBehaviour
                 if (!_attacking)
                 {
                     if (_attack == 2)
-                    {
-                        _marker = (_target.transform.position - transform.position).normalized * slashDistance;                       
+                    {                      
                         StartCoroutine(Slash());
                     }
                     else if (_attack == 1)
                     {
-                        _marker = (_target.transform.position - transform.position).normalized * slashDistance;
                         StartCoroutine(Dash());
                     }
                     else if (_attack == 0)
                     {
-                        _marker = (_target.transform.position - transform.position).normalized * slashDistance;
                         StartCoroutine(Slash());
                     }
                 }                
@@ -134,8 +130,7 @@ public class Death : MonoBehaviour
         _attacking = true;
         while (_updateTimer < 0.5)
         {
-            //transform.forward = Vector3.Slerp(transform.forward, (_marker - transform.position).normalized, Time.deltaTime * 2);
-            transform.position = Vector3.MoveTowards(transform.position, _marker, Time.deltaTime * _moveSpeed);
+            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed);
             _updateTimer += Time.deltaTime;
             yield return null;
         }
@@ -177,8 +172,7 @@ public class Death : MonoBehaviour
         _attacking = true;
         while (_updateTimer < 1)
         {
-            //transform.forward = Vector3.Slerp(transform.forward, (_marker - transform.position).normalized, Time.deltaTime * 2);
-            transform.position = Vector3.MoveTowards(transform.position, _marker, Time.deltaTime * _moveSpeed);
+            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed);//transform.position = Vector3.MoveTowards(transform.position, _marker, Time.deltaTime * _moveSpeed);
             _updateTimer += Time.deltaTime;
             yield return null;
         }
