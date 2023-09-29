@@ -12,6 +12,7 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -4861465600369208194}
     m_Position: {x: 406, y: 288, z: 0}
+<<<<<<< HEAD
   - serializedVersion: 1
     m_State: {fileID: -3193003404788793546}
     m_Position: {x: 276.31146, y: 402.34256, z: 0}
@@ -30,6 +31,8 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: -6987317537418070039}
     m_Position: {x: 450, y: 180, z: 0}
+=======
+>>>>>>> parent of abdf2e6 (Added other Characters and Orb)
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -39,6 +42,7 @@ AnimatorStateMachine:
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
+<<<<<<< HEAD
   m_DefaultState: {fileID: -5977455087626424977}
 --- !u!1102 &-6987317537418070039
 AnimatorState:
@@ -143,6 +147,9 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+=======
+  m_DefaultState: {fileID: -4861465600369208194}
+>>>>>>> parent of abdf2e6 (Added other Characters and Orb)
 --- !u!1102 &-4861465600369208194
 AnimatorState:
   serializedVersion: 6
@@ -169,6 +176,7 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
+<<<<<<< HEAD
 --- !u!1102 &-3193003404788793546
 AnimatorState:
   serializedVersion: 6
@@ -243,6 +251,8 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+=======
+>>>>>>> parent of abdf2e6 (Added other Characters and Orb)
 --- !u!91 &9100000
 AnimatorController:
   m_ObjectHideFlags: 0
@@ -265,6 +275,7 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
+<<<<<<< HEAD
 --- !u!1102 &8603734500400083584
 AnimatorState:
   serializedVersion: 6
@@ -313,3 +324,5 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+=======
+>>>>>>> parent of abdf2e6 (Added other Characters and Orb)

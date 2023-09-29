@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: aacadfd5c0295544586fb163740cba11
+guid: 42dde7192e905184592dcddfe08f9761
 ModelImporter:
   serializedVersion: 21202
   internalIDToNameTable:
   - first:
-      74: -1392207734189304439
-    second: player|playerAction
+      74: 38419124861574626
+    second: death|deathAction
   externalObjects: {}
   materials:
     materialImportMode: 1
