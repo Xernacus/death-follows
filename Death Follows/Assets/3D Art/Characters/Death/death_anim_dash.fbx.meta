@@ -1,12 +1,25 @@
 fileFormatVersion: 2
-guid: 77ba017be5839c84d8e186f0cd5a75b7
+guid: 4942223219f70f44b99eeb7b6742a25b
 ModelImporter:
   serializedVersion: 21202
   internalIDToNameTable:
   - first:
       74: 38419124861574626
     second: death|deathAction
-  externalObjects: {}
+  - first:
+      74: 2970426958629729835
+    second: death|death|death|deathAction
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: death_mat
+    second: {fileID: 2100000, guid: 9fe75296bcdfec44f86b830f06980611, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: outline
+    second: {fileID: 2100000, guid: a78dc1ab0f9164a45bf6556cce84e5ae, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

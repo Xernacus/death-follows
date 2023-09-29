@@ -1,12 +1,19 @@
 fileFormatVersion: 2
-guid: 22be8ba28db353448b50b38a055dbdac
+guid: 197ad3b4e3ab9fa4f8b2d5d135e17c52
 ModelImporter:
   serializedVersion: 21202
-  internalIDToNameTable:
+  internalIDToNameTable: []
+  externalObjects:
   - first:
-      74: 38419124861574626
-    second: death|deathAction
-  externalObjects: {}
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: enemy_gun_mat
+    second: {fileID: 2100000, guid: a9cd0e508b38dc14aa713c1661189e72, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: outline
+    second: {fileID: 2100000, guid: a78dc1ab0f9164a45bf6556cce84e5ae, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
