@@ -9,7 +9,7 @@ public class Death : MonoBehaviour
     private float _offsetDistance = 3f;
     private float _teleportTimer = 0f;
     private float _updateTimer = 0f;
-    private float _teleportCooldown = 15f;
+    private float _undodgeableTimer = 0f;
     private float _cooldown = 2f;
     protected bool _attacking = false;
     protected bool _charging = false;
@@ -24,6 +24,8 @@ public class Death : MonoBehaviour
     #region Hitboxes
     public BasicHitResponder leftSlashHitbox;
     public BasicHitResponder rightSlashHitbox;
+    public BasicHitResponder backDashHitbox;
+    public BasicHitResponder frontDashHitbox;
     public BasicHitResponder undodgeableHitbox;
     #endregion
 
@@ -56,11 +58,11 @@ public class Death : MonoBehaviour
                     }
                     else if (_attack == 1)
                     {
-                        StartCoroutine(Undodgeable());
+                        StartCoroutine(Dash());
                     }
                     else if (_attack == 2)
-                    {
-                        StartCoroutine(Dash());
+                    {                       
+                        StartCoroutine(Undodgeable());
                     }
                 }                
             }
@@ -75,7 +77,7 @@ public class Death : MonoBehaviour
             _teleportTimer += Time.deltaTime;
 
         }
-        
+        _undodgeableTimer += Time.deltaTime;
 
     }
 
@@ -100,7 +102,7 @@ public class Death : MonoBehaviour
                 _cooldown = 1f;
                 break;
             case 2:
-                _cooldown = 5f;
+                _cooldown = 1f;
                 break;
 
             default:
@@ -121,8 +123,16 @@ public class Death : MonoBehaviour
             {
                 _teleportTimer = -1f;
 
-                //MADE ATTACK ONLY CHOOSE SLASH
-                _attack = Random.Range(0, 2);
+                if (_undodgeableTimer > 20f)
+                {
+                    _attack = Random.Range(0, 3);
+                    _undodgeableTimer = 0f;
+                }
+                else
+                {
+                    _attack = Random.Range(0, 2);
+                }
+                
 
                 Debug.Log(_attack);
                 art.SetActive(true);
@@ -165,15 +175,11 @@ public class Death : MonoBehaviour
 
                     int currentFrame = GetCurrentFrame(totalFrames, GetNormalizedTime(state));
 
-                    if (currentFrame < 90)
+                    if (currentFrame < 94)
                     {
                         transform.position = _target.transform.position + _offset;
                         transform.LookAt(_target.transform.position);
-                    }
-                    else if (currentFrame > 89 && currentFrame < 94)
-                    {
-                        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed);
-                    }
+                    }                   
                     else if (currentFrame > 93 && currentFrame < 101)
                     {
                         transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed);
@@ -200,24 +206,9 @@ public class Death : MonoBehaviour
 
     IEnumerator Dash()
     {
+        int id = Animator.StringToHash("Dash");
         _attacking = true;
-        while (_updateTimer < 1)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed);//transform.position = Vector3.MoveTowards(transform.position, _marker, Time.deltaTime * _moveSpeed);
-            _updateTimer += Time.deltaTime;
-            yield return null;
-        }
-        _updateTimer = 0f;
-        _attacking = false;
-        Teleport();
-    }
-
-    IEnumerator Undodgeable()
-    {
-        Debug.Log("Undodge Attack");
-        int id = Animator.StringToHash("Slash");
-        _attacking = true;
-        _animator.Play("Slash", 0, 0.0f);
+        _animator.Play("Dash", 0, 0.0f);
         hitTracker._objectsHit = new List<GameObject>();
         if (_animator.HasState(0, id))
         {
@@ -231,29 +222,89 @@ public class Death : MonoBehaviour
 
                     int currentFrame = GetCurrentFrame(totalFrames, GetNormalizedTime(state));
 
-                    if (currentFrame < 90)
+                    if (currentFrame < 48)
                     {
                         transform.position = _target.transform.position + _offset;
                         transform.LookAt(_target.transform.position);
-                    }                    
-                    else if (currentFrame > 93 && currentFrame < 101)
+                    }                   
+                    else if (currentFrame > 47 && currentFrame < 52)
                     {
-                        undodgeableHitbox._hitBox.CheckHit();
+                        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed);
+                        backDashHitbox._hitBox.CheckHit();
                     }
-                    else if (currentFrame > 100 && currentFrame < 105)
+                    else if (currentFrame > 51 && currentFrame < 58)
                     {
-                        undodgeableHitbox._hitBox.CheckHit();
+                        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed);
+                        frontDashHitbox._hitBox.CheckHit();
                     }
-                    else if (currentFrame > 176)
+                    else if (currentFrame > 71)
                     {
                         break;
                     }
+                }
+                yield return null;
+            }
 
+        }   
+        _attacking = false;
+        Teleport();
+    }
+    /**
+    _attacking = true;
+    while (_updateTimer < 1)
+    {
+        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed);//transform.position = Vector3.MoveTowards(transform.position, _marker, Time.deltaTime * _moveSpeed);
+        _updateTimer += Time.deltaTime;
+        yield return null;
+    }
+    _updateTimer = 0f;
+    _attacking = false;
+    Teleport();
+}**/
+
+    IEnumerator Undodgeable()
+    {
+        Debug.Log("Undodge Attack");
+        int id = Animator.StringToHash("Dodge3");
+        _attacking = true;
+        _animator.Play("Dodge1", 0, 0.0f);
+        hitTracker._objectsHit = new List<GameObject>();
+        
+        if (_animator.HasState(0, id))
+        {
+            while (true)
+            {
+                _updateTimer += Time.deltaTime;
+                var state = _animator.GetCurrentAnimatorStateInfo(0);
+                if (_updateTimer > 5f && !(state.fullPathHash == id || state.shortNameHash == id))
+                {
+                    _animator.Play("Dodge3", 0, 0.0f);
+                }                
+                if (state.fullPathHash == id || state.shortNameHash == id)
+                {
+                    int totalFrames = GetTotalFrames(_animator, 0);
+
+                    int currentFrame = GetCurrentFrame(totalFrames, GetNormalizedTime(state));
+
+                    if (currentFrame > 3 && currentFrame < 35)
+                    {
+                        undodgeableHitbox._hitBox.CheckHit();
+                    }                   
+                    else if (currentFrame > 34)
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    transform.position = _target.transform.position + _offset;
+                    transform.LookAt(_target.transform.position);
                 }
                 yield return null;
             }
 
         }
+        _updateTimer = 0f;
         _attacking = false;
         Teleport();
     }
@@ -278,4 +329,5 @@ public class Death : MonoBehaviour
     {
         return Mathf.RoundToInt(totalFrames * normalizedTime);
     }
+
 }
