@@ -23,6 +23,7 @@ public class Death : MonoBehaviour
     // effect and audio stuff
     public ParticleSystem smokeParticles;
     public ParticleSystem chargeParticles;
+    public ParticleSystem chargeIndicatorParticles;
     public GameObject tpParticles;
     private GameObject tpParticleClone;
     public AudioSource audioSource;
@@ -35,7 +36,6 @@ public class Death : MonoBehaviour
     #region Hitboxes
     public BasicHitResponder leftSlashHitbox;
     public BasicHitResponder rightSlashHitbox;
-    public BasicHitResponder backDashHitbox;
     public BasicHitResponder frontDashHitbox;
     public BasicHitResponder undodgeableHitbox;
     #endregion
@@ -52,7 +52,8 @@ public class Death : MonoBehaviour
         smokeEmission.enabled = false;
         var chargeEmission = chargeParticles.emission;
         chargeEmission.enabled = false;
-
+        var chargeIndicatorEmission = chargeIndicatorParticles.emission;
+        chargeIndicatorEmission.enabled = false;
         // tp sound at start
         audioSource.pitch = Random.Range(0.8f, 1.2f);
         audioSource.PlayOneShot(tpSound, 1f);
@@ -62,7 +63,7 @@ public class Death : MonoBehaviour
     public void Update()
     {
         if (!Teleporting())
-        {           
+        {
             if (!_charging)
             {
                 if (!_attacking)
@@ -90,10 +91,8 @@ public class Death : MonoBehaviour
         else
         {
             _teleportTimer += Time.deltaTime;
-
         }
         _undodgeableTimer += Time.deltaTime;
-
     }
 
     private void GetOffset()
@@ -123,7 +122,6 @@ public class Death : MonoBehaviour
             default:
                 break;
         }
-            
 
         yield return new WaitForSeconds(_cooldown);
 
@@ -147,6 +145,7 @@ public class Death : MonoBehaviour
                 {
                     _attack = Random.Range(0, 2);
                 }
+
                 // spawn effects and tp ect
                 // also recalc offset position to play accurately
                 transform.position = _target.transform.position + _offset;
@@ -164,7 +163,7 @@ public class Death : MonoBehaviour
             else
             {
                 return true;
-            }           
+            }
         }
         return false;
     }
@@ -177,6 +176,8 @@ public class Death : MonoBehaviour
         smokeEmission.enabled = false;
         var chargeEmission = chargeParticles.emission;
         chargeEmission.enabled = false;
+        var chargeIndicatorEmission = chargeIndicatorParticles.emission;
+        chargeIndicatorEmission.enabled = false;
         // tp sound parts
         tpParticleClone = Instantiate(tpParticles, transform.position + Vector3.up, transform.rotation);
         Destroy(tpParticleClone, 2f);
@@ -310,6 +311,8 @@ public class Death : MonoBehaviour
         hitTracker._objectsHit = new List<GameObject>();
         var chargeEmission = chargeParticles.emission;
         chargeEmission.enabled = true;
+        var chargeIndicatorEmission = chargeIndicatorParticles.emission;
+        chargeIndicatorEmission.enabled = true;
         // sound
         audioSource.pitch = 1f;
         audioSource.PlayOneShot(chargeSound, 1f);
@@ -321,7 +324,6 @@ public class Death : MonoBehaviour
                 var state = _animator.GetCurrentAnimatorStateInfo(0);
                 if (_updateTimer > 5f && !(state.fullPathHash == id || state.shortNameHash == id))
                 {
-                    Debug.Log("DODGETHISNERD");
                     _animator.Play("Dodge3", 0, 0.0f);
                 }                
                 if (state.fullPathHash == id || state.shortNameHash == id)
@@ -330,17 +332,17 @@ public class Death : MonoBehaviour
 
                     int currentFrame = GetCurrentFrame(totalFrames, GetNormalizedTime(state));
                     // added this for sound effect
-                    if (currentFrame == 4)
+                    if (currentFrame == 3)
                     {
                         audioSource.pitch = Random.Range(0.8f, 1.2f);
-                        audioSource.PlayOneShot(scytheSound, 1f);
+                        audioSource.PlayOneShot(scytheSound, 0.5f);
                         chargeEmission.enabled = false;
                     }
-                    if (currentFrame > 3 && currentFrame < 35)
+                    if (currentFrame < 20)
                     {
                         undodgeableHitbox._hitBox.CheckHit();
-                    }                   
-                    else if (currentFrame > 34)
+                    }
+                    if (currentFrame > 34)
                     {
                         break;
                     }
