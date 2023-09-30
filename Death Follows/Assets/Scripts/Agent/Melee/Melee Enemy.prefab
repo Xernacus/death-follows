@@ -5008,8 +5008,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8833341663035873343}
   - component: {fileID: 5390259571242061528}
-  - component: {fileID: 7844629291299318254}
   - component: {fileID: 8049550798311937600}
+  - component: {fileID: 5741408891874539676}
   m_Layer: 0
   m_Name: Hitbox
   m_TagString: Untagged
@@ -5045,21 +5045,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.75, y: 2, z: 1.5}
   m_Center: {x: 0, y: 1, z: 0.75}
---- !u!114 &7844629291299318254
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6443398963840226823}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7034d6a5a271094e9351e24399443ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _damage: 1
-  _hitBox: {fileID: 8049550798311937600}
-  hitTracker: {fileID: 11400000, guid: d75015974ed5a004d8ad8e95853d9ef2, type: 2}
 --- !u!114 &8049550798311937600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5076,6 +5061,22 @@ MonoBehaviour:
   m_layerMask:
     serializedVersion: 2
     m_Bits: 512
+--- !u!114 &5741408891874539676
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6443398963840226823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92f5050b1455b9b469ff5f54283dd1f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _damage: 1
+  _hitBox: {fileID: 8049550798311937600}
+  hitTracker: {fileID: 11400000, guid: d75015974ed5a004d8ad8e95853d9ef2, type: 2}
+  targetTag: Player
 --- !u!1 &7924426746851464479
 GameObject:
   m_ObjectHideFlags: 0
@@ -5241,8 +5242,8 @@ NavMeshAgent:
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 1
+  m_AngularSpeed: 180
+  m_StoppingDistance: 2
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
