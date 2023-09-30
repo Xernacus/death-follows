@@ -8,9 +8,10 @@ public class AIEnemyWanderState : AIState
     private NavMeshAgent _agent;
     private AISensor _sensor;
     private float _scanTimer;
-    
+    public Animator animator;
     public void Enter(AIAgent agent)
     {
+        animator = agent.gameObject.GetComponentInChildren<Animator>();
         _agent = agent.gameObject.GetComponent<NavMeshAgent>();
         _sensor = agent.gameObject.GetComponent<AISensor>();
         _agent.destination = FindRandomPath(agent);
@@ -51,6 +52,11 @@ public class AIEnemyWanderState : AIState
                 agent.ChangeState();
             }
 
+        }
+
+        if (animator.GetCurrentAnimatorStateInfo(0).fullPathHash != Animator.StringToHash("Run") && animator.GetCurrentAnimatorStateInfo(0).shortNameHash != Animator.StringToHash("Run"))
+        {
+            animator.Play("Run", 0, 0.0f);
         }
     }
 

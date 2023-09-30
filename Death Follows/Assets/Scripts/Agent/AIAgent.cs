@@ -8,7 +8,6 @@ public class AIAgent : MonoBehaviour
     public AIStateID initialState;
     public AIAgentConfig config;
 
-    public GameObject _hitbox;
 
    
     // Start is called before the first frame update

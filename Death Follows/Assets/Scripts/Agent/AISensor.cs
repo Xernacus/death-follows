@@ -50,7 +50,7 @@ public class AISensor : MonoBehaviour
 
     public void Scan()
     {
-        mesh = CreateWedgeMesh();
+        //mesh = CreateWedgeMesh();
         count = Physics.OverlapSphereNonAlloc(transform.position, distance, colliders, layers, QueryTriggerInteraction.Collide);
         objects.Clear();
         for (int i = 0; i < count; ++i)
@@ -118,7 +118,7 @@ public class AISensor : MonoBehaviour
         scanInterval = 1.0f / scanFrequency;
     }
 
-    
+    /**
     // Debugging code to display vision
     Mesh CreateWedgeMesh()
     {
@@ -222,6 +222,6 @@ public class AISensor : MonoBehaviour
             Gizmos.DrawSphere(obj.transform.position, 0.2f);
         }
     }
-    
+    **/
     
 }

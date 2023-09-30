@@ -15,11 +15,13 @@ public class AIRangedAttackState : AIState
     private float _updateTimer;
     private float _scanTimer;
     private float _turnSpeed = 4f;
-    
+    public Animator animator;
+    public float fireCooldown = 2.2f;
 
     public void Enter(AIAgent agent)
     {
-        //_gun.gameObject.GetComponent<Gun>();
+        animator = agent.gameObject.GetComponentInChildren<Animator>();
+        _gun = agent.gameObject.GetComponent<Gun>();
         _agent = agent.gameObject.GetComponent<NavMeshAgent>();
         _sensor = agent.gameObject.GetComponent<AISensor>();
         _target = GameObject.FindGameObjectWithTag("Player");
@@ -54,24 +56,35 @@ public class AIRangedAttackState : AIState
             GetDestination(agent);
             _updateTimer = 0.25f;
         }
-
+        
         if (_agent.isStopped)
         {
+            if (animator.GetCurrentAnimatorStateInfo(0).fullPathHash != Animator.StringToHash("Shoot") && animator.GetCurrentAnimatorStateInfo(0).shortNameHash != Animator.StringToHash("Shoot"))
+            {
+                animator.Play("Aim", 0, 0.0f);
+            }
             agent.gameObject.transform.forward = Vector3.Slerp(agent.gameObject.transform.forward, (_target.transform.position - agent.gameObject.transform.position).normalized, Time.deltaTime * _turnSpeed);
 
-            _scanTimer -= Time.deltaTime;
-
-            if (_scanTimer < 0)
+            _scanTimer += Time.deltaTime;
+            if (_scanTimer > fireCooldown)
             {
 
-                _scanTimer = 0.33f;
+                _scanTimer = 0f;
                 _sensor.Scan();
                 GameObject[] player = _sensor.Filter(new GameObject[1], "Player");
                 if (player[0] != null)
                 {
-                    AttemptAttack();
+                    animator.Play("Shoot", 0, 0.0f);
+                    _gun.Shoot();
                 }
 
+            }
+        }
+        else
+        {
+            if (animator.GetCurrentAnimatorStateInfo(0).fullPathHash != Animator.StringToHash("Run") && animator.GetCurrentAnimatorStateInfo(0).shortNameHash != Animator.StringToHash("Run"))
+            {
+                animator.Play("Run", 0, 0.0f);
             }
         }
         
@@ -82,7 +95,7 @@ public class AIRangedAttackState : AIState
     private void GetDestination(AIAgent agent)
     {
         if ((agent.gameObject.transform.position - _target.transform.position).magnitude > agent.config.maxDistance)
-        {
+        {            
             _agent.isStopped = false;
             _agent.destination = _target.transform.position;
         }
@@ -100,38 +113,11 @@ public class AIRangedAttackState : AIState
         }
         else
         {
-            _agent.isStopped = true;
+            _agent.isStopped = true;           
         }
     }
 
-    private void AttemptAttack()
-    {
-        /**
-        int id = Animator.StringToHash("Slash");
-        if (_animator.HasState(0, id))
-        {
-            var state = _animator.GetCurrentAnimatorStateInfo(0);
-            while (state.fullPathHash == id || state.shortNameHash == id)
-            {
-                _attacking = true;
-                int totalFrames = GetTotalFrames(_animator, 0);
-
-                int currentFrame = GetCurrentFrame(totalFrames, GetNormalizedTime(state));
-                if (currentFrame > 64 && currentFrame < 90)
-                {
-                    _hitResponder._hitBox.CheckHit();
-                }
-                return;
-            }
-            if (_attacking == true)
-            {
-                Teleport();
-                _attacking = false;
-            }
-            _animator.Play("Slash", 0, 0.0f);
-            _hitResponder._objectsHit = new List<GameObject>();
-        }
-        **/
-    }
+    
+    
 
 }

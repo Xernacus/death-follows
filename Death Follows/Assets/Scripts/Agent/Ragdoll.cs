@@ -5,6 +5,7 @@ using UnityEngine;
 public class Ragdoll : MonoBehaviour
 {
     Rigidbody[] rigidbodies;
+    Collider[] colliders;
     public int health;
     Animator animator;
 
@@ -12,7 +13,8 @@ public class Ragdoll : MonoBehaviour
     void Start()
     {
         rigidbodies = GetComponentsInChildren<Rigidbody>();
-        animator = GetComponent<Animator>();
+        colliders = GetComponentsInChildren<Collider>();
+        animator = GetComponentInChildren<Animator>();
 
         DeactivateRagdoll();
     }
@@ -23,6 +25,14 @@ public class Ragdoll : MonoBehaviour
         {
             rigidbody.isKinematic = true;
         }
+        foreach (var collider in colliders)
+        {
+            if (!collider.isTrigger)
+            {
+                collider.enabled = false;
+            }
+            
+        }        
         animator.enabled = true;
     }
 
@@ -32,15 +42,20 @@ public class Ragdoll : MonoBehaviour
         {
             rigidbody.isKinematic = false;
         }
+        foreach (var collider in colliders)
+        {
+            collider.enabled = true;
+        }
         animator.enabled = false;
     }
 
     public void Damage(int damage)
     {
+        Debug.Log("Enemy got damaged");
         health -= damage;
         if (health <= 0)
         {
-            //ActivateRagdoll();
+            ActivateRagdoll();
         }
         GameObject.Destroy(this.gameObject, 2f);
     }

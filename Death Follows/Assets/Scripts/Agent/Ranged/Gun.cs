@@ -15,6 +15,6 @@ public class Gun : MonoBehaviour
             Instantiate(muzzleFlash, gun.transform.position, gun.transform.rotation);
         }
 
-        Instantiate(bulletPrefab, gun.transform.position, gun.transform.rotation);
+        Instantiate(bulletPrefab, gun.transform.position, gun.transform.rotation * bulletPrefab.transform.rotation);
     }
 }
