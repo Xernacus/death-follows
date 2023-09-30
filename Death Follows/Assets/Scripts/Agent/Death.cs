@@ -37,7 +37,7 @@ public class Death : MonoBehaviour
     public BasicHitResponder leftSlashHitbox;
     public BasicHitResponder rightSlashHitbox;
     public BasicHitResponder frontDashHitbox;
-    public BasicHitResponder undodgeableHitbox;
+    public TagHitResponder undodgeableHitbox;
     #endregion
 
     public float slashDistance = 1f;

@@ -217,7 +217,16 @@ public class PlayerController : MonoBehaviour
         art.SetActive(true);
         ricochetHitParticleClone = Instantiate(ricochetHitParticle, transform.position + Vector3.up, transform.rotation);
         Destroy(ricochetHitParticleClone, 1f);
-        Destroy(enemyHit);
+        var boss = enemyHit.GetComponent<BossRagdoll>();
+        if (boss != null)
+        {
+            boss.Damage(10);
+        }
+        else
+        {
+            Destroy(enemyHit);
+        }
+        
     }
 
     private void Die()
