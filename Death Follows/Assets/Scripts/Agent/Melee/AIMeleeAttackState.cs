@@ -13,7 +13,7 @@ public class AIMeleeAttackState : AIState
     private float _scanTimer;
     private int _type;
     private Vector3 _pastLocation1;
-    private BasicHitResponder _hitResponder;
+    private TagHitResponder _hitResponder;
     public Animator animator;
     private bool _attacking = false;
     //private Vector3 _pastLocation2;
@@ -30,7 +30,7 @@ public class AIMeleeAttackState : AIState
         _pastLocation1 = _target.transform.position;
         _sensor.distance = _sensor.distance / 1.5f;
         _sensor.angle = 45f;
-        _hitResponder = agent.gameObject.GetComponentInChildren< BasicHitResponder>();
+        _hitResponder = agent.gameObject.GetComponentInChildren<TagHitResponder>();
         //_pastLocation2 = _target.transform.position;
     }
 

@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerController : MonoBehaviour
@@ -169,7 +170,15 @@ public class PlayerController : MonoBehaviour
             Destroy(hitParticleClone, 1f);
             audioSource.pitch = UnityEngine.Random.Range(0.8f, 1.2f);
             audioSource.PlayOneShot(hurtSound, 1f);
-            StartCoroutine(DamageOverlay());
+            if (health <= 0)
+            {
+                Die();
+            }
+            else
+            {
+                StartCoroutine(DamageOverlay());
+            }
+            
         }        
     }
     IEnumerator DamageOverlay()
@@ -208,7 +217,7 @@ public class PlayerController : MonoBehaviour
 
     private void Die()
     {
-        ActivateRagdoll();
+       
         StartCoroutine(ScreenFade());
 
     }
@@ -238,8 +247,8 @@ public class PlayerController : MonoBehaviour
             fadeOverlay.color = new Color(fadeOverlay.color.r, fadeOverlay.color.g, fadeOverlay.color.b, fadeOverlay.color.a + .05f);
             yield return null;
         }
-        
-        
+        SceneManager.LoadScene("MainMenu");
+
     }
 }
   

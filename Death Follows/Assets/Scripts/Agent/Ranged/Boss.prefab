@@ -5075,7 +5075,7 @@ GameObject:
   - component: {fileID: 5525564357219184771}
   - component: {fileID: 7839698698483762585}
   m_Layer: 0
-  m_Name: Ranged Enemy
+  m_Name: Boss
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10143,6 +10143,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: enemy_gun
       objectReference: {fileID: 0}
+    - target: {fileID: 1991995053865480293, guid: 197ad3b4e3ab9fa4f8b2d5d135e17c52, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b143887be74a35142b25b0755f53ea4b, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 197ad3b4e3ab9fa4f8b2d5d135e17c52, type: 3}
 --- !u!1 &2564946355609414432 stripped
