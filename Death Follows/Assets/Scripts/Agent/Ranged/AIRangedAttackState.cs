@@ -11,6 +11,7 @@ public class AIRangedAttackState : AIState
     private GameObject _target;
     private PlayerController _playerController;
     private AISensor _sensor;
+    private Gun _gun;
     private float _updateTimer;
     private float _scanTimer;
     private float _turnSpeed = 4f;
@@ -18,6 +19,7 @@ public class AIRangedAttackState : AIState
 
     public void Enter(AIAgent agent)
     {
+        _gun.gameObject.GetComponent<Gun>();
         _agent = agent.gameObject.GetComponent<NavMeshAgent>();
         _sensor = agent.gameObject.GetComponent<AISensor>();
         _target = GameObject.FindGameObjectWithTag("Player");

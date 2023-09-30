@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
-using static UnityEngine.UI.Image;
 
 [RequireComponent(typeof(PlayerInput))]
 public class PlayerController : MonoBehaviour
@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     public GameObject ricochetHitParticle;
     public GameObject art;
     public GameObject death;
+    public Image damageOverlay;
     public Vector2 movementDirection { get; private set; }
     private Vector2 _lookDirection;
 
@@ -32,8 +33,13 @@ public class PlayerController : MonoBehaviour
     InputAction _lookAction;
     InputAction _dashAction;
 
+    Rigidbody[] rigidbodies;
+    Animator animator;
 
-        void OnEnable()
+    public Image fadeOverlay;
+
+
+    void OnEnable()
         {
             _input = GetComponent<PlayerInput>();
             _moveAction = _input.actions["Move"];
@@ -41,7 +47,12 @@ public class PlayerController : MonoBehaviour
             _dashAction = _input.actions["Dash"];
 
             SubInput();
-        }
+
+        rigidbodies = GetComponentsInChildren<Rigidbody>();
+        animator = GetComponent<Animator>();
+
+        DeactivateRagdoll();
+    }
 
         void OnDisable() => UnsubInput();
 
@@ -109,8 +120,10 @@ public class PlayerController : MonoBehaviour
         }   
         void OnDash(InputAction.CallbackContext context)
         {
-            Debug.Log("Dashed");
-            StartCoroutine(Dash());
+            if (!_dashing)
+            {
+                StartCoroutine(Dash());
+            }           
         }
                
         IEnumerator Dash()
@@ -126,9 +139,22 @@ public class PlayerController : MonoBehaviour
         if (!_dashing && !_ricocheting)
         {
             health -= damage;
+            StartCoroutine(DamageOverlay());
         }        
     }
-
+    IEnumerator DamageOverlay()
+    {
+        while (damageOverlay.color.a < 0.35f)
+        {
+            damageOverlay.color = new Color(damageOverlay.color.r, damageOverlay.color.g, damageOverlay.color.b, damageOverlay.color.a + .04f);
+            yield return null;
+        }      
+        while (damageOverlay.color.a > 0f)
+        {
+            damageOverlay.color = new Color(damageOverlay.color.r, damageOverlay.color.g, damageOverlay.color.b, damageOverlay.color.a - .01f);
+            yield return null;
+        }
+    }
     public void SoulRicochet()
     {
         Debug.Log("Ricochet Player");
@@ -144,6 +170,42 @@ public class PlayerController : MonoBehaviour
         art.SetActive(true);
         Instantiate(ricochetHitParticle, enemyHit.transform.position, Quaternion.identity);
         Destroy(enemyHit);
+        
+    }
+
+    private void Die()
+    {
+        ActivateRagdoll();
+        StartCoroutine(ScreenFade());
+
+    }
+
+    public void DeactivateRagdoll()
+    {
+        foreach (var rigidbody in rigidbodies)
+        {
+            rigidbody.isKinematic = true;
+        }
+        animator.enabled = true;
+    }
+
+    public void ActivateRagdoll()
+    {
+        foreach (var rigidbody in rigidbodies)
+        {
+            rigidbody.isKinematic = false;
+        }
+        animator.enabled = false;
+    }
+
+    IEnumerator ScreenFade()
+    {
+        while (fadeOverlay.color.a < 1f)
+        {
+            fadeOverlay.color = new Color(fadeOverlay.color.r, fadeOverlay.color.g, fadeOverlay.color.b, fadeOverlay.color.a + .05f);
+            yield return null;
+        }
+        
         
     }
 }

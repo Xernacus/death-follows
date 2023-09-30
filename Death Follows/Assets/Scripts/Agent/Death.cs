@@ -33,14 +33,12 @@ public class Death : MonoBehaviour
     public float dashDistance = 3f;
     void Start()
     {
-        Debug.Log("Attack");
         _target = GameObject.FindGameObjectWithTag("Player");
         _animator = GetComponentInChildren<Animator>();
         GetOffset();
         art.SetActive(false);
         var emission = particles.emission;
         emission.enabled = false;
-        //_hitResponder = _hitbox.GetComponent<BasicHitResponder>();
     }
 
 
@@ -123,7 +121,7 @@ public class Death : MonoBehaviour
             {
                 _teleportTimer = -1f;
 
-                if (_undodgeableTimer > 20f)
+                if (_undodgeableTimer > 15f)
                 {
                     _attack = Random.Range(0, 3);
                     _undodgeableTimer = 0f;
