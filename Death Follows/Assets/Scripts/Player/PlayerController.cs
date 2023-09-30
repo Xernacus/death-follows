@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private GameObject ricochetHitParticleClone;
     public GameObject hitParticle;
     private GameObject hitParticleClone;
+    public ParticleSystem dodgeParticles;
     public GameObject art;
     public GameObject death;
     public Image damageOverlay;
@@ -49,14 +50,15 @@ public class PlayerController : MonoBehaviour
     private CharacterController _characterController;
 
     void OnEnable()
-        {
-            _input = GetComponent<PlayerInput>();
-            _moveAction = _input.actions["Move"];
-            _lookAction = _input.actions["Look"];
-            _dashAction = _input.actions["Dash"];
+    {
+        _input = GetComponent<PlayerInput>();
+        _moveAction = _input.actions["Move"];
+        _lookAction = _input.actions["Look"];
+        _dashAction = _input.actions["Dash"];
+        SubInput();
 
-            SubInput();
-
+        var dodgeEmission = dodgeParticles.emission;
+        dodgeEmission.enabled = false;
         rigidbodies = art.GetComponentsInChildren<Rigidbody>();
         _characterController = GetComponent<CharacterController>();
         DeactivateRagdoll();
@@ -142,7 +144,7 @@ public class PlayerController : MonoBehaviour
         }   
         void OnDash(InputAction.CallbackContext context)
         {
-            if (!_dashing && dashTimer < 0f)
+            if (!_dashing && dashTimer < 0f && !_ricocheting)
             {
                 dashTimer = 1f;
                 StartCoroutine(Dash());
@@ -153,10 +155,13 @@ public class PlayerController : MonoBehaviour
         {
             animator.Play("Roll", 0, 0);
             _dashSpeed = 2f;
-            UnityEngine.Random.Range(0.8f, 1.2f);
+            audioSource.pitch = UnityEngine.Random.Range(0.8f, 1.2f);
             audioSource.PlayOneShot(dodgeSound, 1f);
+            var dodgeEmission = dodgeParticles.emission;
+            dodgeEmission.enabled = true;
             _dashing = true;
             yield return new WaitForSeconds(dashLength);
+            dodgeEmission.enabled = false;
             _dashing = false;
         }
         
