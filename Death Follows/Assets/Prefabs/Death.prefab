@@ -5009,7 +5009,7 @@ MonoBehaviour:
   leftSlashHitbox: {fileID: 2477795934265186714}
   rightSlashHitbox: {fileID: 2477795934304800497}
   frontDashHitbox: {fileID: 8798866626640441328}
-  undodgeableHitbox: {fileID: 2477795934630083881}
+  undodgeableHitbox: {fileID: 4201324562774848804}
   slashDistance: 1
   dashDistance: 2
 --- !u!1 &2477795934265186719
@@ -5178,8 +5178,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2477795934630083796}
   - component: {fileID: 2477795934630083799}
-  - component: {fileID: 2477795934630083881}
   - component: {fileID: 2477795934630083798}
+  - component: {fileID: 4201324562774848804}
   m_Layer: 0
   m_Name: UndodgeableHitbox
   m_TagString: Untagged
@@ -5215,21 +5215,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 4, y: 2, z: 4}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2477795934630083881
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2477795934630083880}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7034d6a5a271094e9351e24399443ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _damage: -1
-  _hitBox: {fileID: 2477795934630083798}
-  hitTracker: {fileID: 11400000, guid: 35dccdbf564fe5a4197e0dc2d5079b30, type: 2}
 --- !u!114 &2477795934630083798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5246,6 +5231,22 @@ MonoBehaviour:
   m_layerMask:
     serializedVersion: 2
     m_Bits: 512
+--- !u!114 &4201324562774848804
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2477795934630083880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92f5050b1455b9b469ff5f54283dd1f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _damage: -1
+  _hitBox: {fileID: 2477795934630083798}
+  hitTracker: {fileID: 11400000, guid: 35dccdbf564fe5a4197e0dc2d5079b30, type: 2}
+  targetTag: Player
 --- !u!1 &2477795934993656480
 GameObject:
   m_ObjectHideFlags: 0
@@ -19785,7 +19786,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 2, y: 3, z: 4}
+  m_Size: {x: 1.75, y: 3, z: 4}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8798866626640441328
 MonoBehaviour:
