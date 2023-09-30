@@ -9144,7 +9144,12 @@ PrefabInstance:
       propertyPath: m_Name
       value: Death
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 2477795933667713853, guid: b0de100be2b79c94f8e44b9d484f821b, type: 3}
+      propertyPath: undodgeableHitbox
+      value: 
+      objectReference: {fileID: 985739972}
+    m_RemovedComponents:
+    - {fileID: 2477795934630083881, guid: b0de100be2b79c94f8e44b9d484f821b, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: b0de100be2b79c94f8e44b9d484f821b, type: 3}
 --- !u!1 &859097355 stripped
 GameObject:
@@ -9707,6 +9712,38 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &985739967 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2477795934630083880, guid: b0de100be2b79c94f8e44b9d484f821b, type: 3}
+  m_PrefabInstance: {fileID: 859097354}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &985739969 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2477795934630083798, guid: b0de100be2b79c94f8e44b9d484f821b, type: 3}
+  m_PrefabInstance: {fileID: 859097354}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 985739967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 321e4140a04d9ec428ee8b0e2977fbd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &985739972
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 985739967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92f5050b1455b9b469ff5f54283dd1f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _damage: -1
+  _hitBox: {fileID: 985739969}
+  hitTracker: {fileID: 11400000, guid: 35dccdbf564fe5a4197e0dc2d5079b30, type: 2}
+  targetTag: Player
 --- !u!1001 &1004737182
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11458,6 +11495,7 @@ MonoBehaviour:
   soul: {fileID: 1383597231605203852, guid: a16a6bedbc8fe2a47bf819e565549225, type: 3}
   ricochetHitParticle: {fileID: 1299612840048942543, guid: bef0303b45a36794182d00e423f34537, type: 3}
   hitParticle: {fileID: 0}
+  dodgeParticles: {fileID: 0}
   art: {fileID: 1905951683}
   death: {fileID: 0}
   damageOverlay: {fileID: 0}
@@ -11628,6 +11666,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: RefWall (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 6570435292039555330, guid: 366679c9e1b5b8644b27b66cf9244507, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6570435292039555330, guid: 366679c9e1b5b8644b27b66cf9244507, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+    - target: {fileID: 6570435292039555333, guid: 366679c9e1b5b8644b27b66cf9244507, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 366679c9e1b5b8644b27b66cf9244507, type: 3}
 --- !u!4 &1348506261 stripped
@@ -12156,7 +12206,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1020527636446133861, guid: e334f4d4dc26e22419ed45eef76b1972, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -7.3565626
+      value: -7.34
       objectReference: {fileID: 0}
     - target: {fileID: 1020527636446133861, guid: e334f4d4dc26e22419ed45eef76b1972, type: 3}
       propertyPath: m_LocalPosition.z
@@ -12940,6 +12990,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5740082291812539555, guid: f2c686ab78b50af4da9a8be9a7c238d7, type: 3}
+      propertyPath: m_StepOffset
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 5740082291812539558, guid: f2c686ab78b50af4da9a8be9a7c238d7, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -13012,6 +13066,10 @@ PrefabInstance:
       propertyPath: damageOverlay
       value: 
       objectReference: {fileID: 1940583952}
+    - target: {fileID: 5740082291812539559, guid: f2c686ab78b50af4da9a8be9a7c238d7, type: 3}
+      propertyPath: dodgeParticles
+      value: 
+      objectReference: {fileID: 7779643299557291295, guid: d9ba0b293e4fd1240b4b1c790d000e4c, type: 3}
     - target: {fileID: 5740082291812539559, guid: f2c686ab78b50af4da9a8be9a7c238d7, type: 3}
       propertyPath: ricochetHitParticle
       value: 
