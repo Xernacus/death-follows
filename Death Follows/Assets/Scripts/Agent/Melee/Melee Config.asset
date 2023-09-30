@@ -21,4 +21,4 @@ MonoBehaviour:
   avoidAngle: 0
   occlusionLayers:
     serializedVersion: 2
-    m_Bits: 247
+    m_Bits: 1783
