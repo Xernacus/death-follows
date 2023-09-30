@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
 
     public Image fadeOverlay;
 
+    private CharacterController _characterController;
 
     void OnEnable()
         {
@@ -50,7 +51,7 @@ public class PlayerController : MonoBehaviour
 
         rigidbodies = GetComponentsInChildren<Rigidbody>();
         animator = GetComponent<Animator>();
-
+        _characterController = GetComponent<CharacterController>();
         DeactivateRagdoll();
     }
 
@@ -92,13 +93,15 @@ public class PlayerController : MonoBehaviour
             {
                 Vector3 _move = transform.forward + new Vector3(movementDirection.x, 0, movementDirection.y) * 0.5f;
                 _dashSpeed = _dashSpeed - Time.deltaTime * 5;
-                transform.position = Vector3.MoveTowards(transform.position, transform.position + _move, Time.deltaTime * moveSpeed * _dashSpeed);
-            }
+            //transform.position = Vector3.MoveTowards(transform.position, transform.position + _move, Time.deltaTime * moveSpeed * _dashSpeed);
+            _characterController.Move(_move * Time.deltaTime * moveSpeed);
+        }
             else
             {
                 Vector3 _move = new Vector3(movementDirection.x, 0, movementDirection.y);
-                transform.position = Vector3.MoveTowards(transform.position, transform.position + _move, Time.deltaTime * moveSpeed);
-            }
+            // transform.position = Vector3.MoveTowards(transform.position, transform.position + _move, Time.deltaTime * moveSpeed);
+            _characterController.Move(_move * Time.deltaTime * moveSpeed);
+        }
 
         }
         private void HandleRotation()
