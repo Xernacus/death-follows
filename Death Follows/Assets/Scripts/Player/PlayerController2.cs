@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 using static UnityEngine.UI.Image;
 
 [RequireComponent(typeof(PlayerInput))]
-public class PlayerController : MonoBehaviour
+public class PlayerController2 : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public int health = 3;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
 
-public class Death : MonoBehaviour
+public class Death2 : MonoBehaviour
 {
     private GameObject _target;
     private float _offsetDistance = 3f;
