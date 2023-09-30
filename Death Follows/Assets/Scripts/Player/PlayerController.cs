@@ -17,8 +17,8 @@ public class PlayerController : MonoBehaviour
     private Vector2 _lookDirection;
 
     private bool _dashing = false;
-    public float _dashLength = 0.3f;
-    private float _dashSpeed = 2.25f;
+    public float _dashLength;
+    private float _dashSpeed = 2.5f;
 
     private bool _ricocheting = false;
     public float ricochetSpeed = 8f;
@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour
             if (_dashing)
             {
                 Vector3 _move = transform.forward + new Vector3(movementDirection.x, 0, movementDirection.y) * 0.5f;
-                _dashSpeed = _dashSpeed - Time.deltaTime * 5;
+                _dashSpeed = _dashSpeed *0.995f;
                 transform.position = Vector3.MoveTowards(transform.position, transform.position + _move, Time.deltaTime * moveSpeed * _dashSpeed);
             }
             else
@@ -115,10 +115,12 @@ public class PlayerController : MonoBehaviour
                
         IEnumerator Dash()
         {
-            _dashSpeed = 2f;
-            _dashing = true;
-            yield return new WaitForSeconds(_dashLength);
-            _dashing = false;
+            if (!_dashing) {
+                _dashSpeed = 2.5f;
+                _dashing = true;
+                yield return new WaitForSeconds(_dashLength);
+                _dashing = false;
+            }
         }
         
     public void Damage(int damage)
@@ -135,6 +137,7 @@ public class PlayerController : MonoBehaviour
         _ricocheting = true;
         transform.forward = (gameObject.transform.position - death.transform.position).normalized;
         art.SetActive(false);
+        Instantiate(ricochetHitParticle, transform.position, transform.rotation);
         Instantiate(soul, gameObject.transform);
     }
 
@@ -147,4 +150,3 @@ public class PlayerController : MonoBehaviour
         
     }
 }
-  

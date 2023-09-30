@@ -14,12 +14,21 @@ public class Death : MonoBehaviour
     protected bool _attacking = false;
     protected bool _charging = false;
     private float _moveSpeed = 10f;
+    public float dashSpeed = 2f;
     protected int _attack;
     private Vector3 _offset;
     private Animator _animator;
     public ParticleSystem particles;
+    public GameObject tpParticles;
+    public GameObject tpParticleClone;
     public GameObject art;
     public HitTracker hitTracker;
+    public AudioSource audioSource;
+    public AudioClip tpSound;
+    public AudioClip chargeSound;
+    public AudioClip slashWindupSound;
+    public AudioClip dashWindupSound;
+    public AudioClip scytheSound;
 
     #region Hitboxes
     public BasicHitResponder leftSlashHitbox;
@@ -29,8 +38,6 @@ public class Death : MonoBehaviour
     public BasicHitResponder undodgeableHitbox;
     #endregion
 
-    public float slashDistance = 1f;
-    public float dashDistance = 3f;
     void Start()
     {
         Debug.Log("Attack");
@@ -40,6 +47,9 @@ public class Death : MonoBehaviour
         art.SetActive(false);
         var emission = particles.emission;
         emission.enabled = false;
+
+        audioSource.pitch = Random.Range(0.8f, 1.2f);
+        audioSource.PlayOneShot(tpSound, 1f);
         //_hitResponder = _hitbox.GetComponent<BasicHitResponder>();
     }
 
@@ -96,7 +106,7 @@ public class Death : MonoBehaviour
         switch (_attack)
         {
             case 0:
-                _cooldown = 0f;
+                _cooldown = 1f;
                 break;
             case 1:
                 _cooldown = 1f;
@@ -111,7 +121,6 @@ public class Death : MonoBehaviour
             
 
         yield return new WaitForSeconds(_cooldown);
-
         _charging = false;
     }
 
@@ -126,13 +135,22 @@ public class Death : MonoBehaviour
                 if (_undodgeableTimer > 20f)
                 {
                     _attack = Random.Range(0, 3);
-                    _undodgeableTimer = 0f;
+                    if (_attack == 2) {
+                        _undodgeableTimer = 0f;
+                    }
                 }
                 else
                 {
                     _attack = Random.Range(0, 2);
                 }
-                
+
+                // these 4 are just to spawn the tp particles
+                transform.position = _target.transform.position + _offset;
+                transform.LookAt(_target.transform.position);
+                tpParticleClone = Instantiate(tpParticles, transform.position + Vector3.up, transform.rotation);
+                Destroy(tpParticleClone, 2f);
+                audioSource.pitch = Random.Range(0.8f, 1.2f);
+                audioSource.PlayOneShot(tpSound, 1f);
 
                 Debug.Log(_attack);
                 art.SetActive(true);
@@ -154,6 +172,10 @@ public class Death : MonoBehaviour
         art.SetActive(false);
         var emission = particles.emission;
         emission.enabled = false;
+        tpParticleClone = Instantiate(tpParticles, transform.position + Vector3.up, transform.rotation);
+        Destroy(tpParticleClone, 2f);
+        audioSource.pitch = Random.Range(0.8f, 1.2f);
+        audioSource.PlayOneShot(tpSound, 1f);
         return;
     }
 
@@ -163,6 +185,8 @@ public class Death : MonoBehaviour
         _attacking = true;
         _animator.Play("Slash", 0, 0.0f);
         hitTracker._objectsHit = new List<GameObject>();
+        audioSource.pitch = Random.Range(0.8f, 1.2f);
+        audioSource.PlayOneShot(slashWindupSound, 1f);
         if (_animator.HasState(0, id))
         {
             while (true)
@@ -182,6 +206,11 @@ public class Death : MonoBehaviour
                     }                   
                     else if (currentFrame > 93 && currentFrame < 101)
                     {
+                        // added this for sound effect
+                        if (currentFrame == 94) {
+                            audioSource.pitch = Random.Range(0.8f, 1.2f);
+                            audioSource.PlayOneShot(scytheSound, 0.5f);
+                        }
                         transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed);
                         rightSlashHitbox._hitBox.CheckHit();
                     }
@@ -210,6 +239,8 @@ public class Death : MonoBehaviour
         _attacking = true;
         _animator.Play("Dash", 0, 0.0f);
         hitTracker._objectsHit = new List<GameObject>();
+        audioSource.pitch = Random.Range(0.8f, 1.2f);
+        audioSource.PlayOneShot(dashWindupSound, 1f);
         if (_animator.HasState(0, id))
         {
             while (true)
@@ -222,22 +253,28 @@ public class Death : MonoBehaviour
 
                     int currentFrame = GetCurrentFrame(totalFrames, GetNormalizedTime(state));
 
-                    if (currentFrame < 48)
+                    if (currentFrame < 120)
                     {
                         transform.position = _target.transform.position + _offset;
                         transform.LookAt(_target.transform.position);
-                    }                   
-                    else if (currentFrame > 47 && currentFrame < 52)
+                    }
+                    else if (currentFrame > 120 && currentFrame < 130)
                     {
-                        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed);
+                        // added this for sound effect
+                        if (currentFrame == 121)
+                        {
+                            audioSource.pitch = Random.Range(0.8f, 1.2f);
+                            audioSource.PlayOneShot(scytheSound, 0.5f);
+                        }
+                        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed * dashSpeed);
                         backDashHitbox._hitBox.CheckHit();
                     }
-                    else if (currentFrame > 51 && currentFrame < 58)
+                    else if (currentFrame > 130 && currentFrame < 140)
                     {
-                        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed);
+                        transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * _moveSpeed * dashSpeed);
                         frontDashHitbox._hitBox.CheckHit();
                     }
-                    else if (currentFrame > 71)
+                    else if (currentFrame > 195)
                     {
                         break;
                     }
@@ -269,7 +306,8 @@ public class Death : MonoBehaviour
         _attacking = true;
         _animator.Play("Dodge1", 0, 0.0f);
         hitTracker._objectsHit = new List<GameObject>();
-        
+        audioSource.pitch = 1f;
+        audioSource.PlayOneShot(chargeSound, 1f);
         if (_animator.HasState(0, id))
         {
             while (true)
@@ -285,7 +323,12 @@ public class Death : MonoBehaviour
                     int totalFrames = GetTotalFrames(_animator, 0);
 
                     int currentFrame = GetCurrentFrame(totalFrames, GetNormalizedTime(state));
-
+                    // added this for sound effect
+                    if (currentFrame == 2)
+                    {
+                        audioSource.pitch = Random.Range(0.8f, 1.2f);
+                        audioSource.PlayOneShot(scytheSound, 0.5f);
+                    }
                     if (currentFrame > 3 && currentFrame < 35)
                     {
                         undodgeableHitbox._hitBox.CheckHit();
