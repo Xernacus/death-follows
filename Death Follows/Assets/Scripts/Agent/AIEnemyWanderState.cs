@@ -81,7 +81,6 @@ public class AIEnemyWanderState : AIState
                 }
             }
         }
-        Debug.Log("Oopsie");
        return agent.gameObject.transform.position;
     }
 }

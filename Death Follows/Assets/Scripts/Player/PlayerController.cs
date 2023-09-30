@@ -11,15 +11,23 @@ public class PlayerController : MonoBehaviour
     public int health = 3;
     public GameObject soul;
     public GameObject ricochetHitParticle;
+    private GameObject ricochetHitParticleClone;
+    public GameObject hitParticle;
+    private GameObject hitParticleClone;
     public GameObject art;
     public GameObject death;
     public Image damageOverlay;
     public Vector2 movementDirection { get; private set; }
     private Vector2 _lookDirection;
 
+    public AudioSource audioSource;
+    public AudioClip dodgeSound;
+    public AudioClip hurtSound;
+
     private bool _dashing = false;
-    public float _dashLength = 0.3f;
-    private float _dashSpeed = 1.4f;
+    public float dashLength = 0.75f;
+    public float dashTimer = 1f;
+    private float _dashSpeed = 2f;
 
     private bool _ricocheting = false;
     public float ricochetSpeed = 8f;
@@ -58,11 +66,11 @@ public class PlayerController : MonoBehaviour
 
         void Update()
         {
-        if (_ricocheting)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * ricochetSpeed);
-            return;
-        }
+            if (_ricocheting)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, transform.position + transform.forward, Time.deltaTime * ricochetSpeed);
+                return;
+            }
             HandleInput();
             HandleMovement();
             if (_dashing)
@@ -70,7 +78,7 @@ public class PlayerController : MonoBehaviour
                 return;
             }
             HandleRotation();
-        }
+    }
              
         void SubInput() => _dashAction.performed += OnDash;
         void UnsubInput() => _dashAction.performed -= OnDash;
@@ -88,11 +96,11 @@ public class PlayerController : MonoBehaviour
 
         private void HandleMovement()
         {
-
+        dashTimer -= Time.deltaTime;
         if (_dashing)
         {
             Vector3 _move = transform.forward + new Vector3(movementDirection.x, 0, movementDirection.y) * 0.5f;
-            _dashSpeed = _dashSpeed - Time.deltaTime * 2f;
+            _dashSpeed -= Time.deltaTime*3f*_dashSpeed;
             //transform.position = Vector3.MoveTowards(transform.position, transform.position + _move, Time.deltaTime * moveSpeed * _dashSpeed);
             _characterController.Move(_move * Time.deltaTime * moveSpeed * _dashSpeed);
         }
@@ -134,18 +142,21 @@ public class PlayerController : MonoBehaviour
         }   
         void OnDash(InputAction.CallbackContext context)
         {
-            if (!_dashing)
+            if (!_dashing && dashTimer < 0f)
             {
+                dashTimer = 1f;
                 StartCoroutine(Dash());
             }           
         }
                
         IEnumerator Dash()
         {
-        animator.Play("Roll", 0, 0.05f);
-        _dashSpeed = 2f;
+            animator.Play("Roll", 0, 0);
+            _dashSpeed = 2f;
+            UnityEngine.Random.Range(0.8f, 1.2f);
+            audioSource.PlayOneShot(dodgeSound, 1f);
             _dashing = true;
-            yield return new WaitForSeconds(_dashLength);
+            yield return new WaitForSeconds(dashLength);
             _dashing = false;
         }
         
@@ -154,6 +165,10 @@ public class PlayerController : MonoBehaviour
         if (!_dashing && !_ricocheting)
         {
             health -= damage;
+            hitParticleClone = Instantiate(hitParticle, transform.position + Vector3.up, transform.rotation);
+            Destroy(hitParticleClone, 1f);
+            audioSource.pitch = UnityEngine.Random.Range(0.8f, 1.2f);
+            audioSource.PlayOneShot(hurtSound, 1f);
             StartCoroutine(DamageOverlay());
         }        
     }
@@ -166,7 +181,7 @@ public class PlayerController : MonoBehaviour
         }      
         while (damageOverlay.color.a > 0f)
         {
-            damageOverlay.color = new Color(damageOverlay.color.r, damageOverlay.color.g, damageOverlay.color.b, damageOverlay.color.a - .01f);
+            damageOverlay.color = new Color(damageOverlay.color.r, damageOverlay.color.g, damageOverlay.color.b, damageOverlay.color.a - .0025f);
             yield return null;
         }
     }
@@ -176,6 +191,9 @@ public class PlayerController : MonoBehaviour
         _ricocheting = true;
         transform.forward = (gameObject.transform.position - death.transform.position).normalized;
         art.SetActive(false);
+        // particle and soul
+        ricochetHitParticleClone = Instantiate(ricochetHitParticle, transform.position + Vector3.up, transform.rotation);
+        Destroy(ricochetHitParticleClone, 1f);
         Instantiate(soul, gameObject.transform);
     }
 
@@ -183,9 +201,9 @@ public class PlayerController : MonoBehaviour
     {
         _ricocheting = false;
         art.SetActive(true);
-        Instantiate(ricochetHitParticle, enemyHit.transform.position, Quaternion.identity);
+        ricochetHitParticleClone = Instantiate(ricochetHitParticle, transform.position + Vector3.up, transform.rotation);
+        Destroy(ricochetHitParticleClone, 1f);
         Destroy(enemyHit);
-        
     }
 
     private void Die()
