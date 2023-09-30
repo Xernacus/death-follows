@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
 
     private bool _dashing = false;
     public float _dashLength = 0.3f;
-    private float _dashSpeed = 2.25f;
+    private float _dashSpeed = 1.4f;
 
     private bool _ricocheting = false;
     public float ricochetSpeed = 8f;
@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
     InputAction _dashAction;
 
     Rigidbody[] rigidbodies;
-    Animator animator;
+    public Animator animator;
 
     public Image fadeOverlay;
 
@@ -49,8 +49,7 @@ public class PlayerController : MonoBehaviour
 
             SubInput();
 
-        rigidbodies = GetComponentsInChildren<Rigidbody>();
-        animator = GetComponent<Animator>();
+        rigidbodies = art.GetComponentsInChildren<Rigidbody>();
         _characterController = GetComponent<CharacterController>();
         DeactivateRagdoll();
     }
@@ -89,16 +88,25 @@ public class PlayerController : MonoBehaviour
 
         private void HandleMovement()
         {
-            if (_dashing)
-            {
-                Vector3 _move = transform.forward + new Vector3(movementDirection.x, 0, movementDirection.y) * 0.5f;
-                _dashSpeed = _dashSpeed - Time.deltaTime * 5;
+
+        if (_dashing)
+        {
+            Vector3 _move = transform.forward + new Vector3(movementDirection.x, 0, movementDirection.y) * 0.5f;
+            _dashSpeed = _dashSpeed - Time.deltaTime * 2f;
             //transform.position = Vector3.MoveTowards(transform.position, transform.position + _move, Time.deltaTime * moveSpeed * _dashSpeed);
-            _characterController.Move(_move * Time.deltaTime * moveSpeed);
+            _characterController.Move(_move * Time.deltaTime * moveSpeed * _dashSpeed);
         }
-            else
+        else
+        {
+            if (movementDirection.magnitude > 0 && animator.GetCurrentAnimatorStateInfo(0).fullPathHash != Animator.StringToHash("Run") && animator.GetCurrentAnimatorStateInfo(0).shortNameHash != Animator.StringToHash("Run"))
             {
-                Vector3 _move = new Vector3(movementDirection.x, 0, movementDirection.y);
+                animator.Play("Run", 0, 0.05f);
+            }
+            if (movementDirection.magnitude == 0f && animator.GetCurrentAnimatorStateInfo(0).fullPathHash != Animator.StringToHash("Idle"))
+            {
+                animator.Play("Idle", 0, 0.05f);
+            }
+            Vector3 _move = new Vector3(movementDirection.x, 0, movementDirection.y);
             // transform.position = Vector3.MoveTowards(transform.position, transform.position + _move, Time.deltaTime * moveSpeed);
             _characterController.Move(_move * Time.deltaTime * moveSpeed);
         }
@@ -106,6 +114,8 @@ public class PlayerController : MonoBehaviour
         }
         private void HandleRotation()
         {
+        LookAt(new Vector3(gameObject.transform.position.x + movementDirection.x, gameObject.transform.position.y, gameObject.transform.position.z + movementDirection.y));
+        /**
             Ray ray = Camera.main.ScreenPointToRay(_lookDirection);
             Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
             float rayDistance;
@@ -115,7 +125,8 @@ public class PlayerController : MonoBehaviour
                 Vector3 point = ray.GetPoint(rayDistance);
                 LookAt(point);
             }
-        }
+        **/
+    }
         private void LookAt(Vector3 point)
         {
             Vector3 lookPoint = new Vector3(point.x, transform.position.y, point.z);
@@ -131,7 +142,8 @@ public class PlayerController : MonoBehaviour
                
         IEnumerator Dash()
         {
-            _dashSpeed = 2f;
+        animator.Play("Roll", 0, 0.05f);
+        _dashSpeed = 2f;
             _dashing = true;
             yield return new WaitForSeconds(_dashLength);
             _dashing = false;

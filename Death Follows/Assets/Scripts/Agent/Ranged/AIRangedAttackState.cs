@@ -23,8 +23,6 @@ public class AIRangedAttackState : AIState
         _agent = agent.gameObject.GetComponent<NavMeshAgent>();
         _sensor = agent.gameObject.GetComponent<AISensor>();
         _target = GameObject.FindGameObjectWithTag("Player");
-        Debug.Log(_target);
-        Debug.Log(GameObject.FindGameObjectWithTag("Player"));
         _playerController = _target.GetComponent<PlayerController>();
         _sensor.distance = _sensor.distance * 2;
         _sensor.angle = 20f;
