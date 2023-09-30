@@ -6,6 +6,9 @@ public class EnemyHurtResponder : MonoBehaviour, IHurtResponder
 {
     private List<HurtBox> m_hurtboxes = new List<HurtBox>();
 
+    public GameObject hitParticle;
+    private GameObject hitParticleClone;
+
     private void Start()
     {
         m_hurtboxes = new List<HurtBox>(GetComponentsInChildren<HurtBox>());
@@ -22,7 +25,8 @@ public class EnemyHurtResponder : MonoBehaviour, IHurtResponder
 
     void IHurtResponder.Response(HitData data) 
     {
-        Debug.Log("Damaged");
+        hitParticleClone = Instantiate(hitParticle, transform.position + Vector3.up, transform.rotation);
+        Destroy(hitParticleClone, 1f);
         gameObject.GetComponent<Ragdoll>().Damage(data.damage);
     }
 }
