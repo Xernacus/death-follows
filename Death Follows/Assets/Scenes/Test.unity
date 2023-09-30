@@ -257,6 +257,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Death
       objectReference: {fileID: 0}
+    - target: {fileID: 2477795933667713853, guid: b0de100be2b79c94f8e44b9d484f821b, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b0de100be2b79c94f8e44b9d484f821b, type: 3}
 --- !u!1 &307643865
@@ -888,6 +892,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5525564357219184770, guid: 300a8be1954497442b367cd824b3d34d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5525564357219184771, guid: 300a8be1954497442b367cd824b3d34d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5525564357219184771, guid: 300a8be1954497442b367cd824b3d34d, type: 3}
       propertyPath: hitParticle
       value: 
@@ -919,6 +931,18 @@ PrefabInstance:
     - target: {fileID: 7294024047616954459, guid: 300a8be1954497442b367cd824b3d34d, type: 3}
       propertyPath: EmissionModule.m_Bursts.Array.data[0].countCurve.scalar
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7839698698483762660, guid: 300a8be1954497442b367cd824b3d34d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7839698698483762662, guid: 300a8be1954497442b367cd824b3d34d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7839698698483762663, guid: 300a8be1954497442b367cd824b3d34d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7839698698483762665, guid: 300a8be1954497442b367cd824b3d34d, type: 3}
       propertyPath: m_RootOrder
@@ -963,6 +987,10 @@ PrefabInstance:
     - target: {fileID: 7839698698483762665, guid: 300a8be1954497442b367cd824b3d34d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7839698698483762666, guid: 300a8be1954497442b367cd824b3d34d, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7839698698483762669, guid: 300a8be1954497442b367cd824b3d34d, type: 3}
       propertyPath: m_Name
@@ -1280,6 +1308,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8091960906271737136, guid: 3652ec651d4f6af459f20eeb1525df4e, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8091960906271737138, guid: 3652ec651d4f6af459f20eeb1525df4e, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8091960906271737139, guid: 3652ec651d4f6af459f20eeb1525df4e, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8091960906271737145, guid: 3652ec651d4f6af459f20eeb1525df4e, type: 3}
       propertyPath: m_Name
       value: Melee Enemy
@@ -1327,6 +1367,18 @@ PrefabInstance:
     - target: {fileID: 8091960906271737149, guid: 3652ec651d4f6af459f20eeb1525df4e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8091960906271737150, guid: 3652ec651d4f6af459f20eeb1525df4e, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8091960907046857612, guid: 3652ec651d4f6af459f20eeb1525df4e, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8091960907046857615, guid: 3652ec651d4f6af459f20eeb1525df4e, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3652ec651d4f6af459f20eeb1525df4e, type: 3}
