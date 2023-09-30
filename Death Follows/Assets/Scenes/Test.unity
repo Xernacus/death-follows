@@ -1338,6 +1338,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75fa5714ec624304c82450e9188fa4a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  art: {fileID: 0}
   health: 1
   fadeOverlay: {fileID: 1134420121}
   text: {fileID: 2071596151}
