@@ -58,6 +58,10 @@ public class AIEnemyWanderState : AIState
         {
             animator.Play("Run", 0, 0.0f);
         }
+        if (_agent.velocity.magnitude < 0.01f)
+        {
+            animator.Play("Idle", 0, 0.0f);
+        }
     }
 
     private Vector3 FindRandomPath(AIAgent agent)
