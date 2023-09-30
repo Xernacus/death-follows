@@ -54,15 +54,10 @@ public class AIEnemyWanderState : AIState
 
         }
 
-        if (_agent.remainingDistance <= _agent.stoppingDistance)
-        {
-            animator.Play("Idle", 0, 0.0f);
-        }
-        else if (animator.GetCurrentAnimatorStateInfo(0).fullPathHash != Animator.StringToHash("Run") && animator.GetCurrentAnimatorStateInfo(0).shortNameHash != Animator.StringToHash("Run"))
+        if (animator.GetCurrentAnimatorStateInfo(0).fullPathHash != Animator.StringToHash("Run") && animator.GetCurrentAnimatorStateInfo(0).shortNameHash != Animator.StringToHash("Run"))
         {
             animator.Play("Run", 0, 0.0f);
         }
-        
     }
 
     private Vector3 FindRandomPath(AIAgent agent)
@@ -82,6 +77,7 @@ public class AIEnemyWanderState : AIState
                 }
             }
         }
+        Debug.Log("Oopsie");
        return agent.gameObject.transform.position;
     }
 }

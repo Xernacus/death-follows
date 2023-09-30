@@ -13,14 +13,10 @@ public class AIMeleeAttackState : AIState
     private float _scanTimer;
     private int _type;
     private Vector3 _pastLocation1;
-    private TagHitResponder _hitResponder;
-    public Animator animator;
-    private bool _attacking = false;
     //private Vector3 _pastLocation2;
 
     public void Enter(AIAgent agent)
-    {
-        animator = agent.gameObject.GetComponentInChildren<Animator>();
+    {       
         _agent = agent.gameObject.GetComponent<NavMeshAgent>();
         _sensor = agent.gameObject.GetComponent<AISensor>();
         _target = GameObject.FindGameObjectWithTag("Player");
@@ -28,9 +24,8 @@ public class AIMeleeAttackState : AIState
         _type = Random.Range(0,2);
         Debug.Log(_type);
         _pastLocation1 = _target.transform.position;
-        _sensor.distance = _sensor.distance / 1.5f;
+        _sensor.distance = _sensor.distance / 2;
         _sensor.angle = 45f;
-        _hitResponder = agent.gameObject.GetComponentInChildren<TagHitResponder>();
         //_pastLocation2 = _target.transform.position;
     }
 
@@ -71,29 +66,15 @@ public class AIMeleeAttackState : AIState
         if (_scanTimer < 0)
         {
 
-            _scanTimer = 0.5f;
+            _scanTimer = 0.33f;
             _sensor.Scan();
             GameObject[] player = _sensor.Filter(new GameObject[1], "Player");
-            if (player[0] != null && _attacking != true)
+            if (player[0] != null)
             {
                 Debug.Log("Attack");
                 AttemptAttack();
-                animator.Play("Stab", 0, 0.0f);
-                _hitResponder.hitTracker._objectsHit = new List<GameObject>();
-                _attacking = true;
             }
 
-        }
-        if (_attacking == true)
-        {
-            AttemptAttack();
-        }
-        else
-        {
-            if (animator.GetCurrentAnimatorStateInfo(0).fullPathHash != Animator.StringToHash("Run") && animator.GetCurrentAnimatorStateInfo(0).shortNameHash != Animator.StringToHash("Run"))
-            {
-                animator.Play("Run", 0, 0.0f);
-            }
         }
     }
 
@@ -113,53 +94,33 @@ public class AIMeleeAttackState : AIState
     }
 
     private void AttemptAttack()
-    {       
-        int id = Animator.StringToHash("Stab");
-        if (animator.HasState(0, id))
+    {
+        /**
+        int id = Animator.StringToHash("Slash");
+        if (_animator.HasState(0, id))
         {
-            var state = animator.GetCurrentAnimatorStateInfo(0);
-            //if (state.fullPathHash == id || state.shortNameHash == id)
-            //{
+            var state = _animator.GetCurrentAnimatorStateInfo(0);
+            while (state.fullPathHash == id || state.shortNameHash == id)
+            {
                 _attacking = true;
-                int totalFrames = GetTotalFrames(animator, 0);
+                int totalFrames = GetTotalFrames(_animator, 0);
 
                 int currentFrame = GetCurrentFrame(totalFrames, GetNormalizedTime(state));
-                if (currentFrame > 16 && currentFrame < 21)
+                if (currentFrame > 64 && currentFrame < 90)
                 {
                     _hitResponder._hitBox.CheckHit();
                 }
-                else if(currentFrame > 29)
+                return;
+            }
+            if (_attacking == true)
             {
+                Teleport();
                 _attacking = false;
             }
-                return;
-            //}
-            
-
+            _animator.Play("Slash", 0, 0.0f);
+            _hitResponder._objectsHit = new List<GameObject>();
         }
-        
-    }
-
-    private int GetTotalFrames(Animator animator, int layerIndex)
-    {
-        AnimatorClipInfo[] _clipInfos = animator.GetNextAnimatorClipInfo(layerIndex);
-        if (_clipInfos.Length == 0)
-        {
-            _clipInfos = animator.GetCurrentAnimatorClipInfo(layerIndex);
-        }
-
-        AnimationClip clip = _clipInfos[0].clip;
-        return Mathf.RoundToInt(clip.length * clip.frameRate);
-    }
-
-    private float GetNormalizedTime(AnimatorStateInfo stateInfo)
-    {
-        return stateInfo.normalizedTime > 1 ? 1 : stateInfo.normalizedTime;
-    }
-
-    private int GetCurrentFrame(int totalFrames, float normalizedTime)
-    {
-        return Mathf.RoundToInt(totalFrames * normalizedTime);
+        **/
     }
 
 }

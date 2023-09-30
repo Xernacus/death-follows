@@ -57,6 +57,6 @@ public class Ragdoll : MonoBehaviour
         {
             ActivateRagdoll();
         }
-        GameObject.Destroy(this.gameObject, 0.01f);
+        GameObject.Destroy(this.gameObject, 2f);
     }
 }

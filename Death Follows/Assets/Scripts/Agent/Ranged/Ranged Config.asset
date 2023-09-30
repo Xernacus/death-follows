@@ -16,9 +16,9 @@ MonoBehaviour:
   animator: {fileID: 0}
   newState: 2
   wanderRadius: 4
-  minDistance: 2.5
+  minDistance: 4
   maxDistance: 11
   avoidAngle: 30
   occlusionLayers:
     serializedVersion: 2
-    m_Bits: 1783
+    m_Bits: 247
