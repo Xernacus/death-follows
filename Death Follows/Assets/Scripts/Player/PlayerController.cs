@@ -229,9 +229,9 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    private void Die()
+    public void Die()
     {
-       
+        
         StartCoroutine(ScreenFade());
 
     }
@@ -258,7 +258,8 @@ public class PlayerController : MonoBehaviour
     {
         while (fadeOverlay.color.a < 1f)
         {
-            fadeOverlay.color = new Color(fadeOverlay.color.r, fadeOverlay.color.g, fadeOverlay.color.b, fadeOverlay.color.a + .05f);
+            gameObject.transform.position = gameObject.transform.position;
+            fadeOverlay.color = new Color(fadeOverlay.color.r, fadeOverlay.color.g, fadeOverlay.color.b, fadeOverlay.color.a + .001f);
             yield return null;
         }
         SceneManager.LoadScene("MainMenu");
