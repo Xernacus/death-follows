@@ -8,13 +8,11 @@ public class Door : MonoBehaviour
     private bool open;
     public int openCount;
     EnemyManager enemyManager;
-    BoxCollider collider;
     // Start is called before the first frame update
     void Start()
     {
         enemyManager = GameObject.FindGameObjectWithTag("EnemyManager").GetComponent<EnemyManager>();
         animator = GetComponent<Animator>();
-        collider = GetComponent<BoxCollider>();
     }
 
     private void Update()
@@ -30,8 +28,15 @@ public class Door : MonoBehaviour
         {
             animator.Play("Door", 0, 0.0f);
             open = true;
-            collider.enabled = false;
         }       
     }
 
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            Open();
+        }
+        
+    }
 }
