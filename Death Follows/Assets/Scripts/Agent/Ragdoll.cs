@@ -8,10 +8,11 @@ public class Ragdoll : MonoBehaviour
     Collider[] colliders;
     public int health;
     Animator animator;
-
+    EnemyManager enemyManager;
     // Start is called before the first frame update
     void Start()
     {
+        enemyManager = GameObject.FindGameObjectWithTag("EnemyManager").GetComponent<EnemyManager>();
         rigidbodies = GetComponentsInChildren<Rigidbody>();
         colliders = GetComponentsInChildren<Collider>();
         animator = GetComponentInChildren<Animator>();
@@ -57,6 +58,7 @@ public class Ragdoll : MonoBehaviour
         {
             ActivateRagdoll();
         }
+        enemyManager.OnDeath();
         GameObject.Destroy(this.gameObject, 0.01f);
     }
 }
