@@ -28,7 +28,7 @@ public class AIMeleeAttackState : AIState
         _type = Random.Range(0,2);
         Debug.Log(_type);
         _pastLocation1 = _target.transform.position;
-        _sensor.distance = _sensor.distance / 1.5f;
+        _sensor.distance = 2f;
         _sensor.angle = 45f;
         _hitResponder = agent.gameObject.GetComponentInChildren<TagHitResponder>();
         //_pastLocation2 = _target.transform.position;

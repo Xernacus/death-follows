@@ -6,6 +6,7 @@ public class Ricochet : MonoBehaviour
 {
     [SerializeField] GameObject _hitbox;
     private RicochetHitResponder _hitResponder;
+    private float _gracePeriod;
 
     public void Start()
     {
@@ -14,6 +15,10 @@ public class Ricochet : MonoBehaviour
 
     public void Update()
     {
-        _hitResponder._hitBox.CheckHit();
+        _gracePeriod += Time.deltaTime;
+        if (_gracePeriod >= 0.25)
+        {
+            _hitResponder._hitBox.CheckHit();
+        }      
     }
 }

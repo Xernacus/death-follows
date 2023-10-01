@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     private GameObject ricochetHitParticleClone;
     public GameObject hitParticle;
     private GameObject hitParticleClone;
+    public ParticleSystem dodgeParticles;
     public GameObject art;
     public GameObject death;
     public Image damageOverlay;
@@ -50,14 +51,15 @@ public class PlayerController : MonoBehaviour
     private CharacterController _characterController;
 
     void OnEnable()
-        {
-            _input = GetComponent<PlayerInput>();
-            _moveAction = _input.actions["Move"];
-            _lookAction = _input.actions["Look"];
-            _dashAction = _input.actions["Dash"];
+    {
+        _input = GetComponent<PlayerInput>();
+        _moveAction = _input.actions["Move"];
+        _lookAction = _input.actions["Look"];
+        _dashAction = _input.actions["Dash"];
+        SubInput();
 
-            SubInput();
-
+        var dodgeEmission = dodgeParticles.emission;
+        dodgeEmission.enabled = false;
         rigidbodies = art.GetComponentsInChildren<Rigidbody>();
         _characterController = GetComponent<CharacterController>();
         DeactivateRagdoll();
@@ -143,7 +145,7 @@ public class PlayerController : MonoBehaviour
         }   
         void OnDash(InputAction.CallbackContext context)
         {
-            if (!_dashing && dashTimer < 0f)
+            if (!_dashing && dashTimer < 0f && !_ricocheting)
             {
                 dashTimer = 1f;
                 StartCoroutine(Dash());
@@ -154,10 +156,13 @@ public class PlayerController : MonoBehaviour
         {
             animator.Play("Roll", 0, 0);
             _dashSpeed = 2f;
-            UnityEngine.Random.Range(0.8f, 1.2f);
+            audioSource.pitch = UnityEngine.Random.Range(0.8f, 1.2f);
             audioSource.PlayOneShot(dodgeSound, 1f);
+            var dodgeEmission = dodgeParticles.emission;
+            dodgeEmission.enabled = true;
             _dashing = true;
             yield return new WaitForSeconds(dashLength);
+            dodgeEmission.enabled = false;
             _dashing = false;
         }
         
@@ -212,12 +217,21 @@ public class PlayerController : MonoBehaviour
         art.SetActive(true);
         ricochetHitParticleClone = Instantiate(ricochetHitParticle, transform.position + Vector3.up, transform.rotation);
         Destroy(ricochetHitParticleClone, 1f);
-        Destroy(enemyHit);
+        var boss = enemyHit.GetComponent<BossRagdoll>();
+        if (boss != null)
+        {
+            boss.Damage(10);
+        }
+        else
+        {
+            Destroy(enemyHit);
+        }
+        
     }
 
-    private void Die()
+    public void Die()
     {
-       
+        
         StartCoroutine(ScreenFade());
 
     }
@@ -244,7 +258,8 @@ public class PlayerController : MonoBehaviour
     {
         while (fadeOverlay.color.a < 1f)
         {
-            fadeOverlay.color = new Color(fadeOverlay.color.r, fadeOverlay.color.g, fadeOverlay.color.b, fadeOverlay.color.a + .05f);
+            gameObject.transform.position = gameObject.transform.position;
+            fadeOverlay.color = new Color(fadeOverlay.color.r, fadeOverlay.color.g, fadeOverlay.color.b, fadeOverlay.color.a + .002f);
             yield return null;
         }
         SceneManager.LoadScene("MainMenu");

@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
-using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -106,7 +104,7 @@ public class AIRangedAttackState : AIState
             Vector3 direction = (position - _target.transform.position).normalized;
 
             float angle = Random.Range(-agent.config.avoidAngle, agent.config.avoidAngle);
-            float distance = agent.config.minDistance * Random.Range(0, agent.config.avoidAngle);
+            float distance = agent.config.minDistance* 1.5f * Random.Range(0, agent.config.avoidAngle);
             direction = Quaternion.Euler(0, angle, 0) * direction * distance;
 
             _agent.destination = direction + position;

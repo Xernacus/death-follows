@@ -8,6 +8,7 @@ public class RicochetHitResponder : MonoBehaviour, IHitResponder
     [SerializeField] public HitBox _hitBox;
     public List<GameObject> _objectsHit = new List<GameObject>();
     public string targetTag = "Enemy";
+    public string obstacleTag = "Obstacle";
 
     int IHitResponder.Damage { get => _damage; }
     // Start is called before the first frame update
@@ -21,6 +22,12 @@ public class RicochetHitResponder : MonoBehaviour, IHitResponder
     {
         if (_objectsHit.Contains(data.hurtBox.Owner))
         {
+            return false;
+        }
+        if (obstacleTag != null && data.hurtBox.Owner.CompareTag(obstacleTag))
+        {
+            GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().Die();
+            Destroy(gameObject.transform.parent.gameObject, 0.01f);            
             return false;
         }
         if (targetTag != null && !data.hurtBox.Owner.CompareTag(targetTag))
